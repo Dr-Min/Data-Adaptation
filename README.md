@@ -32,7 +32,7 @@ python in_dividual.py 입력_디렉토리_경로 출력_디렉토리_경로
 
 > 두 파일의 차이점이라고 한다면 one_file은 마지막에 파일 이름을 지정해주어야 합니다. 그 외의 폴더 경로는 동일합니다.
 
-
+## 우리가 하고 있는거
 
 데이터 변환 및 재구성 (Data Transformation and Restructuring):
 원본 데이터를 새로운 형식과 구조로 변환하고 있습니다.
