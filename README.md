@@ -14,6 +14,8 @@
 100개의 json 라벨링 데이터가 있다면 100개의 jsonl openai 튜닝 구조 방식의 출력이 생겨납니다.
 
 
+
+
 ## 1000.py (2024-08-16 08:25 추가)
 
 
@@ -29,11 +31,15 @@
 
 - 각 폴더의 경로만 알면 사용하기 쉽습니다.
 
+
+
 ### one_file.py 사용법
 
 python one_file.py 입력_디렉토리_경로 출력_파일_경로_파일이름.jsonl
 
 예시 : python one_file.py C:\Users\USER\Desktop\wjscjfl\input C:\Users\USER\Desktop\wjscjfl\output\combined_output.jsonl
+
+
 
 ## in_dividual.py 사용법
 
@@ -44,6 +50,8 @@ python in_dividual.py 입력_디렉토리_경로 출력_디렉토리_경로
 
 > 두 파일의 차이점이라고 한다면 one_file은 마지막에 파일 이름을 지정해주어야 합니다. 그 외의 폴더 경로는 동일합니다.
 
+
+
 ## 1000.py 사용법
 
 python chunked_converter.py 입력_디렉토리_경로 출력_디렉토리_경로 --chunk_size 1000
@@ -51,6 +59,12 @@ python chunked_converter.py 입력_디렉토리_경로 출력_디렉토리_경�
 예시 : python 1000.py C:\Users\USER\Desktop\wjscjfl\input_text C:\Users\USER\Desktop\wjscjfl\output --chunk_size 1000      
 
 > --chunk_size 1000 맨 뒤에 이 명령어로 청크 사이즈를 조절합니다. 500으로 바꾸면 500단위로 변경됨 ㅇㅇ 기본은 1000임
+
+
+
+
+---
+
 
 ## 우리가 하고 있는거
 
