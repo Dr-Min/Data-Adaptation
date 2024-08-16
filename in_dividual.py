@@ -31,6 +31,14 @@ def convert_to_openai_format(conversation):
             "content": utterance['text']
         })
     
+    # 마지막 메시지가 user의 것이라면 제거
+    if messages[-1]['role'] == 'user':
+        messages.pop()
+    
+    # 메시지가 system 프롬프트만 남았다면 이 대화는 건너뛰기
+    if len(messages) <= 1:
+        return None
+    
     return {"messages": messages}
 
 def process_json_file(input_file, output_dir):
@@ -39,13 +47,17 @@ def process_json_file(input_file, output_dir):
             data = json.load(infile)
             openai_format = convert_to_openai_format(data)
             
-            output_filename = os.path.splitext(os.path.basename(input_file))[0] + '_converted.jsonl'
-            output_path = os.path.join(output_dir, output_filename)
-            
-            with open(output_path, 'w', encoding='utf-8') as outfile:
-                json.dump(openai_format, outfile, ensure_ascii=False)
-                outfile.write('\n')
-        return True
+            if openai_format:
+                output_filename = os.path.splitext(os.path.basename(input_file))[0] + '_converted.jsonl'
+                output_path = os.path.join(output_dir, output_filename)
+                
+                with open(output_path, 'w', encoding='utf-8') as outfile:
+                    json.dump(openai_format, outfile, ensure_ascii=False)
+                    outfile.write('\n')
+                return True
+            else:
+                print(f"Skipping file {input_file}: Invalid conversation format")
+                return False
     except Exception as e:
         print(f"Error processing file {input_file}: {str(e)}")
         return False
