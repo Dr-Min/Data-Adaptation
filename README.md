@@ -31,3 +31,20 @@ python in_dividual.py 입력_디렉토리_경로 출력_디렉토리_경로
 
 
 > 두 파일의 차이점이라고 한다면 one_file은 마지막에 파일 이름을 지정해주어야 합니다. 그 외의 폴더 경로는 동일합니다.
+
+
+
+데이터 변환 및 재구성 (Data Transformation and Restructuring):
+원본 데이터를 새로운 형식과 구조로 변환하고 있습니다.
+
+
+데이터 포맷팅 (Data Formatting):
+OpenAI의 파인튜닝 요구사항에 맞게 데이터 형식을 조정하고 있습니다.
+
+
+데이터 준비 (Data Preparation):
+AI 모델 학습을 위해 데이터를 최적화된 형태로 준비하고 있습니다.
+
+
+데이터 어댑테이션 (Data Adaptation):
+원본 데이터를 특정 AI 모델과 학습 목적에 맞게 조정하고 있습니다.
