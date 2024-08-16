@@ -41,45 +41,64 @@ def convert_to_openai_format(conversation):
     
     return {"messages": messages}
 
-def process_json_file(input_file, output_file):
+def process_json_file(input_file):
     try:
-        with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'a', encoding='utf-8') as outfile:
+        with open(input_file, 'r', encoding='utf-8') as infile:
             data = json.load(infile)
-            openai_format = convert_to_openai_format(data)
-            if openai_format:  # None이 아닐 경우에만 저장
-                json.dump(openai_format, outfile, ensure_ascii=False)
-                outfile.write('\n')
-                return True
-            else:
-                print(f"Skipping file {input_file}: Invalid conversation format")
-                return False
+            return convert_to_openai_format(data)
     except Exception as e:
         print(f"Error processing file {input_file}: {str(e)}")
-        return False
+        return None
 
-def process_directory(input_dir, output_file):
-    if os.path.exists(output_file):
-        os.remove(output_file)
+def write_chunk(chunk, output_dir, chunk_num):
+    output_file = os.path.join(output_dir, f'chunk_{chunk_num:03d}.jsonl')
+    with open(output_file, 'w', encoding='utf-8') as outfile:
+        for item in chunk:
+            json.dump(item, outfile, ensure_ascii=False)
+            outfile.write('\n')
+    print(f"Wrote chunk {chunk_num} to {output_file}")
+
+def process_directory(input_dir, output_dir, chunk_size=1000):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
     print(f"Found {len(json_files)} JSON files in the input directory.")
     
+    chunk = []
+    chunk_num = 1
     successful_conversions = 0
+
     for json_file in tqdm(json_files, desc="Processing files"):
         input_path = os.path.join(input_dir, json_file)
-        if process_json_file(input_path, output_file):
+        result = process_json_file(input_path)
+        
+        if result:
+            chunk.append(result)
             successful_conversions += 1
 
+            if len(chunk) == chunk_size:
+                write_chunk(chunk, output_dir, chunk_num)
+                chunk = []
+                chunk_num += 1
+
+    # Write any remaining items in the last chunk
+    if chunk:
+        write_chunk(chunk, output_dir, chunk_num)
+
     print(f"Successfully converted files: {successful_conversions}/{len(json_files)}")
+    print(f"Total chunks created: {chunk_num}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Convert multiple JSON files to OpenAI fine-tuning format')
+    parser = argparse.ArgumentParser(description='Convert multiple JSON files to chunked OpenAI fine-tuning format files')
     parser.add_argument('input_dir', help='Input directory containing JSON files')
-    parser.add_argument('output_file', help='Output JSONL file in OpenAI format')
+    parser.add_argument('output_dir', help='Output directory for converted JSONL files')
+    parser.add_argument('--chunk_size', type=int, default=1000, help='Number of conversations per chunk (default: 1000)')
     args = parser.parse_args()
 
     print(f"Input directory: {args.input_dir}")
-    print(f"Output file: {args.output_file}")
+    print(f"Output directory: {args.output_dir}")
+    print(f"Chunk size: {args.chunk_size}")
 
-    process_directory(args.input_dir, args.output_file)
-    print(f"Conversion complete. Output file: {args.output_file}")
+    process_directory(args.input_dir, args.output_dir, args.chunk_size)
+    print(f"Conversion complete. Output files are in: {args.output_dir}")
